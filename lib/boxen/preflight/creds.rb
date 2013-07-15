@@ -26,12 +26,10 @@ class Boxen::Preflight::Creds < Boxen::Preflight
       q.default = config.login || config.user
       q.validate = /\A[^@]+\Z/
     end
-  
-    puts "Instead of using a password, use a Personal Access Token. You can create one by going to https://github.com/settings/applications"
-    config.token = console.ask "GitHub Persoanl Access Token: " do |q|
-      q.echo = "*"
-      q.validate = /\A[a-zA-Z0-9]{40}\z/
-    end
+
+    response = `curl -i -u #{config.login} \
+      -d '{"scopes": ["repo"]}' https://api.github.com/authorizations`
+    config.token = response.slice(/[0-9a-f]{40}/)
 
     unless token?
       puts # i <3 vertical whitespace
