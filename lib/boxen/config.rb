@@ -91,7 +91,7 @@ module Boxen
     # instance is created any time `login` or `password` change.
 
     def api
-      @api ||= Octokit::Client.new :login => login, :password => token
+      @api ||= Octokit::Client.new :login => login, :oauth_token => token
     end
 
     # Spew a bunch of debug logging? Default is `false`.
