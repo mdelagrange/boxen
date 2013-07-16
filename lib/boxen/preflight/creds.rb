@@ -27,8 +27,13 @@ class Boxen::Preflight::Creds < Boxen::Preflight
       q.validate = /\A[^@]+\Z/
     end
 
+    if config.enterprise?
+      apiurl = "#{config.ghurl}/api/v3"
+    else
+      apiurl = "https://api.github.com"
+    end
     response = `curl -i -u #{config.login} \
-      -d '{"scopes": ["repo"]}' https://api.github.com/authorizations`
+      -d '{"scopes": ["repo"]}' #{apiurl}/authorizations`
     config.token = response.slice(/[0-9a-f]{40}/)
 
     unless token?
